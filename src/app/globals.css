@@ -1,26 +1,334 @@
-@import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+  /* Base colors */
+  --foreground: 15, 23, 42;
+  --background-start: 255, 255, 255;
+  --background-end: 249, 250, 251;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Brand colors */
+  --primary: 124, 58, 237; /* Purple */
+  --primary-light: 167, 139, 250;
+  --secondary: 56, 189, 248; /* Sky blue */
+  --secondary-light: 186, 230, 253;
+  --accent: 251, 113, 133; /* Pink */
+  --accent-light: 253, 186, 186;
+
+  /* UI colors */
+  --success: 16, 185, 129;
+  --warning: 250, 204, 21;
+  --error: 239, 68, 68;
+  --info: 59, 130, 246;
+
+  /* Gradients */
+  --gradient-primary: linear-gradient(
+    135deg,
+    rgb(var(--primary)),
+    rgb(var(--accent))
+  );
+  --gradient-card: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.9),
+    rgba(249, 250, 251, 0.9)
+  );
+  --gradient-button: linear-gradient(
+    90deg,
+    rgb(var(--primary)),
+    rgb(var(--accent))
+  );
+
+  /* Components */
+  --card-bg: 255, 255, 255;
+  --card-border: 226, 232, 240;
+  --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+
+  /* Animation */
+  --transition-fast: 0.2s;
+  --transition-medium: 0.3s;
+  --transition-slow: 0.5s;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --foreground: 226, 232, 240;
+    --background-start: 17, 24, 39;
+    --background-end: 30, 41, 59;
+
+    --primary: 139, 92, 246;
+    --primary-light: 167, 139, 250;
+
+    --gradient-card: linear-gradient(
+      180deg,
+      rgba(30, 41, 59, 0.9),
+      rgba(17, 24, 39, 0.9)
+    );
+
+    --card-bg: 30, 41, 59;
+    --card-border: 51, 65, 85;
+    --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   }
 }
 
+/* Base styles */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  color: rgb(var(--foreground));
+  background: linear-gradient(
+      to bottom,
+      rgb(var(--background-start)),
+      rgb(var(--background-end))
+    )
+    fixed;
+  min-height: 100vh;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+/* Layout */
+.container {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+.section {
+  @apply py-12 md:py-16 lg:py-20;
+}
+
+/* Cards */
+.card {
+  background: rgb(var(--card-bg));
+  border: 1px solid rgba(var(--card-border), 0.1);
+  box-shadow: var(--card-shadow);
+  @apply rounded-2xl transition duration-300 overflow-hidden;
+}
+
+.card-hover {
+  @apply hover:shadow-xl hover:-translate-y-1 transition-all duration-300;
+}
+
+.glass {
+  background: rgba(var(--card-bg), 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Buttons */
+.btn {
+  @apply inline-flex items-center justify-center rounded-xl font-medium transition-all px-5 py-3 text-white;
+  background-image: var(--gradient-button);
+  box-shadow: 0 4px 12px rgba(var(--primary), 0.2);
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: var(--transition-medium);
+  z-index: -1;
+}
+
+.btn:hover::before {
+  left: 100%;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(var(--primary), 0.3);
+}
+
+.btn-secondary {
+  @apply bg-white text-indigo-600 border border-indigo-100;
+  background-image: none;
+  box-shadow: 0 4px 12px rgba(226, 232, 240, 0.4);
+}
+
+.btn-secondary:hover {
+  @apply bg-indigo-50;
+  box-shadow: 0 6px 20px rgba(226, 232, 240, 0.6);
+}
+
+.btn-sm {
+  @apply text-sm px-4 py-2 rounded-lg;
+}
+
+/* Text gradients */
+.gradient-text {
+  @apply bg-clip-text text-transparent;
+  background-image: var(--gradient-primary);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -468px 0;
+  }
+  100% {
+    background-position: 468px 0;
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.8s ease forwards;
+}
+
+.animate-slideUp {
+  animation: slideUp 0.8s ease forwards;
+}
+
+.animate-scaleIn {
+  animation: scaleIn 0.8s ease forwards;
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(var(--card-bg), 0),
+    rgba(var(--foreground), 0.05),
+    rgba(var(--card-bg), 0)
+  );
+  background-size: 600px 100%;
+  animation: shimmer 2s infinite linear;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Animation delays */
+.delay-100 {
+  animation-delay: 0.1s;
+}
+
+.delay-200 {
+  animation-delay: 0.2s;
+}
+
+.delay-300 {
+  animation-delay: 0.3s;
+}
+
+.delay-400 {
+  animation-delay: 0.4s;
+}
+
+.delay-500 {
+  animation-delay: 0.5s;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(var(--card-border), 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(var(--primary), 0.3);
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--primary), 0.5);
+}
+
+/* Form elements */
+input,
+textarea,
+select {
+  @apply bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 transition-all;
+}
+
+/* Tooltip */
+.tooltip {
+  @apply relative inline-block;
+}
+
+.tooltip .tooltip-text {
+  @apply absolute invisible bg-gray-900 text-white text-xs rounded py-1 px-2 z-10 opacity-0 transition-opacity duration-300;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+.tooltip:hover .tooltip-text {
+  @apply visible opacity-100;
+}
+
+/* Utilities */
+.text-balance {
+  text-wrap: balance;
+}
+
+.overflow-ellipsis {
+  @apply overflow-hidden whitespace-nowrap text-ellipsis;
 }

@@ -44,9 +44,9 @@ export const GET = async (req: Request) => {
     type: "action",
     icon: `${new URL("/donate-sol.jpg", req.url).toString()}`,
     label: "1 SOL",
-    title: "Donate SOL",
+    title: "DropRegards",
     description:
-      "This Blink demonstrates how to donate SOL on the Solana blockchain. It is a part of the official Blink Starter Guides by Dialect Labs.",
+      "Send SOL tokens as a token of your regard.",
     // Links is used if you have multiple actions or if you need more than one params
     links: {
       actions: [
