@@ -3,20 +3,21 @@ import { ACTIONS_CORS_HEADERS, ActionsJson } from "@solana/actions";
 export const GET = async () => {
   const payload: ActionsJson = {
     rules: [
-      // Map all root level routes to an action
+      // map all root level routes to an action
       {
-        pathPattern: "/",
-        apiPath: "/api/donate",
+        pathPattern: "/*",
+        apiPath: "/api/actions/*",
+      },
+      // idempotent rule as the fallback
+      {
+        pathPattern: "/api/actions/**",
+        apiPath: "/api/actions/**",
       },
     ],
   };
 
-  return new Response(JSON.stringify(payload), {
-    headers: {
-        ...ACTIONS_CORS_HEADERS,
-        "X-Action-Version": "2.4",
-        "X-Blockchain-Ids": "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1",
-      },
+  return Response.json(payload, {
+    headers: ACTIONS_CORS_HEADERS,
   });
 };
 
