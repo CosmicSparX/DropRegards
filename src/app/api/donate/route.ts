@@ -26,9 +26,9 @@ import {
       links: {
         actions: [
           {
+            type: "transaction",
             label: "Donate 0.1 SOL",
             href: `${url.href}?amount=0.1`,
-            type: "transaction",
           },
         ],
       },
@@ -36,7 +36,7 @@ import {
     return new Response(JSON.stringify(payload), {
       headers: {
         ...ACTIONS_CORS_HEADERS,
-        "X-Action-Version": "2.1.3",
+        "X-Action-Version": "2.4",
         "X-Blockchain-Ids": "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1",
       },
     });
@@ -64,7 +64,7 @@ import {
           status: 400,
           headers: {
             ...ACTIONS_CORS_HEADERS,
-            "X-Action-Version": "2.1.3",
+            "X-Action-Version": "2.4",
             "X-Blockchain-Ids": "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1",
           },
         }
@@ -94,7 +94,7 @@ import {
     return new Response(JSON.stringify(payload), {
       headers: {
         ...ACTIONS_CORS_HEADERS,
-        "X-Action-Version": "2.1.3",
+        "X-Action-Version": "2.4",
         "X-Blockchain-Ids": "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1",
       },
     });
