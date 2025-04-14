@@ -18,6 +18,7 @@ import {
   export async function GET(request: Request) {
     const url = new URL(request.url);
     const payload: ActionGetResponse = {
+      type: "action",
       icon: "/images/logo.jpg", // Local icon path
       title: "Donate to Rahul",
       description: "Support Rahul by donating SOL.",
