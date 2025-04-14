@@ -12,7 +12,11 @@ export const GET = async () => {
   };
 
   return new Response(JSON.stringify(payload), {
-    headers: ACTIONS_CORS_HEADERS,
+    headers: {
+        ...ACTIONS_CORS_HEADERS,
+        "X-Action-Version": "2.1.3",
+        "X-Blockchain-Ids": "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1",
+      },
   });
 };
 
