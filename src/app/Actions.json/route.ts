@@ -6,7 +6,7 @@ export const GET = async () => {
       // Map all root level routes to an action
       {
         pathPattern: "/",
-        apiPath: "/api/donate/",
+        apiPath: "/api/donate",
       },
     ],
   };
@@ -14,7 +14,7 @@ export const GET = async () => {
   return new Response(JSON.stringify(payload), {
     headers: {
         ...ACTIONS_CORS_HEADERS,
-        "X-Action-Version": "2.1.3",
+        "X-Action-Version": "2.4",
         "X-Blockchain-Ids": "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1",
       },
   });
