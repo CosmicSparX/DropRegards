@@ -48,7 +48,7 @@ import {
   
     try {
       sender = new PublicKey(body.account);
-    } catch (error) {
+    } catch {
       return new Response(
         JSON.stringify({
           error: {
