@@ -1,5 +1,3 @@
-import Image from "next/image";
-
 export default function Home() {
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
@@ -17,7 +15,7 @@ export default function Home() {
           <ol className="list-decimal list-inside space-y-2 mb-4">
             <li>The app provides a blink endpoint at <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-mono">/api/actions/donate-sol</code></li>
             <li>Users can select predefined donation amounts or enter a custom amount</li>
-            <li>The transaction is created and sent to the user's wallet for approval</li>
+            <li>The transaction is created and sent to the user&apos;s wallet for approval</li>
             <li>Once approved, the SOL is transferred to the donation address</li>
           </ol>
           

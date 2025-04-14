@@ -1,14 +1,30 @@
 import {
   ActionGetResponse,
+  ActionPostRequest,
+  ActionPostResponse,
   ACTIONS_CORS_HEADERS,
   BLOCKCHAIN_IDS,
 } from "@solana/actions";
-import { Connection, PublicKey, SystemProgram, Transaction } from "@solana/web3.js";
+
+import {
+  Connection,
+  PublicKey,
+  LAMPORTS_PER_SOL,
+  SystemProgram,
+  TransactionMessage,
+  VersionedTransaction,
+} from "@solana/web3.js";
 
 // CAIP-2 format for Solana
 const blockchain = BLOCKCHAIN_IDS.devnet;
 
-// Set standardized headers for Blink Providers
+// Create a connection to the Solana blockchain
+const connection = new Connection("https://api.devnet.solana.com");
+
+// Set the donation wallet address
+const donationWallet = "BijikHHEuzpQJG5CZn5FW5ewfuUbGJNzABCRUQfnSZjY";
+
+// Create headers with CAIP blockchain ID
 const headers = {
   ...ACTIONS_CORS_HEADERS,
   "x-blockchain-ids": blockchain,
@@ -75,64 +91,71 @@ export const GET = async (req: Request) => {
   });
 };
 
-// POST endpoint that handles the actual transaction creation
+// POST endpoint handles the actual transaction creation
 export const POST = async (req: Request) => {
   try {
-    // Get URL parameters
+    // Step 1:Extract parameters from the URL
     const url = new URL(req.url);
-    const amount = url.searchParams.get("amount");
-    
-    if (!amount || isNaN(Number(amount))) {
-      return new Response(
-        JSON.stringify({ error: "Invalid amount parameter" }),
-        {
-          status: 400,
-          headers,
-        }
-      );
-    }
 
-    // Convert SOL amount to lamports (1 SOL = 1,000,000,000 lamports)
-    const lamports = Math.floor(Number(amount) * 1_000_000_000);
-    
-    // Hardcoded recipient address - replace with your donation address
-    const recipientAddress = new PublicKey("BijikHHEuzpQJG5CZn5FW5ewfuUbGJNzABCRUQfnSZjY");
-    
-    // Create a new transaction
-    const transaction = new Transaction();
-    
-    // Add instruction to transfer SOL
-    transaction.add(
-      SystemProgram.transfer({
-        fromPubkey: new PublicKey("11111111111111111111111111111111"), // This is a placeholder, will be replaced by the wallet
-        toPubkey: recipientAddress,
-        lamports,
-      })
+    // Amount of SOL to transfer is passed in the URL
+    const amount = Number(url.searchParams.get("amount"));
+
+    // Payer public key is passed in the request body
+    const request: ActionPostRequest = await req.json();
+    const payer = new PublicKey(request.account);
+
+    // Receiver is the donation wallet address
+    const receiver = new PublicKey(donationWallet);
+
+    // Step 2: Prepare the transaction
+    const transaction = await prepareTransaction(
+      connection,
+      payer,
+      receiver,
+      amount
     );
 
-    // Return the serialized transaction for the wallet to sign
-    const serializedTransaction = transaction.serialize({
-      requireAllSignatures: false,
-      verifySignatures: false,
-    });
+    // Step 3: Create a response with the serialized transaction
+    const response: ActionPostResponse = {
+      type: "transaction",
+      transaction: Buffer.from(transaction.serialize()).toString("base64"),
+    };
 
-    return new Response(
-      JSON.stringify({
-        transaction: Buffer.from(serializedTransaction).toString("base64"),
-      }),
-      {
-        status: 200,
-        headers,
-      }
-    );
+    // Return the response with proper headers
+    return Response.json(response, { status: 200, headers });
   } catch (error) {
-    console.error("Error creating transaction:", error);
-    return new Response(
-      JSON.stringify({ error: "Failed to create transaction" }),
-      {
-        status: 500,
-        headers,
-      }
-    );
+    // Log and return an error response
+    console.error("Error processing request:", error);
+    return new Response(JSON.stringify({ error: "Internal server error" }), {
+      status: 500,
+      headers,
+    });
   }
+};
+
+const prepareTransaction = async (
+  connection: Connection,
+  payer: PublicKey,
+  receiver: PublicKey,
+  amount: number
+) => {
+  // Create a transfer instruction
+  const instruction = SystemProgram.transfer({
+    fromPubkey: payer,
+    toPubkey: receiver,
+    lamports: amount * LAMPORTS_PER_SOL,
+  });
+
+  // Get the latest blockhash
+  const { blockhash } = await connection.getLatestBlockhash();
+
+  // Create a transaction message
+  const message = new TransactionMessage({
+    payerKey: payer,
+    recentBlockhash: blockhash,
+    instructions: [instruction],
+  }).compileToV0Message();
+
+  // Create and return a versioned transaction
+  return new VersionedTransaction(message);
 }; 
