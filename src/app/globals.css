@@ -4,6 +4,11 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Add smooth scrolling to the entire page */
+html {
+  scroll-behavior: smooth;
+}
+
 :root {
   /* Base colors */
   --foreground: 15, 23, 42;
@@ -86,6 +91,20 @@ body {
   min-height: 100vh;
   line-height: 1.6;
   overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+/* Page structure */
+html,
+body,
+main {
+  margin: 0;
+  padding: 0;
+}
+
+main {
+  display: block;
 }
 
 h1,
@@ -266,6 +285,23 @@ h6 {
   50% {
     transform: translateY(-10px);
   }
+}
+
+/* Slower, more subtle pulse animation for mouse follow effect */
+@keyframes pulse-slow {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 3s ease-in-out infinite;
 }
 
 .animate-fadeIn {
@@ -601,4 +637,503 @@ select {
   to {
     stroke-dashoffset: 0;
   }
+}
+
+/* New Animations */
+@keyframes fade-slide-up {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-slide-left {
+  0% {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fade-slide-right {
+  0% {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pop-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes blur-in {
+  0% {
+    opacity: 0;
+    filter: blur(10px);
+  }
+  100% {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+@keyframes text-gradient-reveal {
+  0% {
+    background-size: 0% 100%;
+    opacity: 0.7;
+  }
+  100% {
+    background-size: 100% 100%;
+    opacity: 1;
+  }
+}
+
+.animate-fade-slide-up {
+  opacity: 0;
+  animation: fade-slide-up 0.8s ease forwards;
+}
+
+.animate-fade-slide-left {
+  opacity: 0;
+  animation: fade-slide-left 0.7s ease forwards;
+}
+
+.animate-fade-slide-right {
+  opacity: 0;
+  animation: fade-slide-right 0.7s ease forwards;
+}
+
+.animate-pop-in {
+  opacity: 0;
+  animation: pop-in 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.animate-blur-in {
+  opacity: 0;
+  animation: blur-in 1.2s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+
+.animate-text-gradient-reveal {
+  background-image: var(--gradient-primary);
+  background-size: 0% 100%;
+  background-repeat: no-repeat;
+  animation: text-gradient-reveal 1.2s ease forwards;
+}
+
+/* Animation Delays */
+.animation-delay-100 {
+  animation-delay: 0.1s;
+}
+
+.animation-delay-200 {
+  animation-delay: 0.2s;
+}
+
+.animation-delay-300 {
+  animation-delay: 0.3s;
+}
+
+.animation-delay-400 {
+  animation-delay: 0.4s;
+}
+
+.animation-delay-500 {
+  animation-delay: 0.5s;
+}
+
+.animation-delay-600 {
+  animation-delay: 0.6s;
+}
+
+.animation-delay-700 {
+  animation-delay: 0.7s;
+}
+
+.animation-delay-800 {
+  animation-delay: 0.8s;
+}
+
+/* Scroll Animations */
+.scroll-animate {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: opacity, transform;
+}
+
+.scroll-animate.fade-up {
+  transform: translateY(50px);
+}
+
+.scroll-animate.fade-down {
+  transform: translateY(-50px);
+}
+
+.scroll-animate.fade-left {
+  transform: translateX(50px);
+}
+
+.scroll-animate.fade-right {
+  transform: translateX(-50px);
+}
+
+.scroll-animate.zoom-in {
+  transform: scale(0.7);
+}
+
+.scroll-animate.zoom-out {
+  transform: scale(1.3);
+}
+
+.scroll-animate.flip {
+  transform: perspective(1000px) rotateY(90deg);
+}
+
+.scroll-animate.rotate {
+  transform: rotate(-10deg);
+}
+
+.scroll-animate.visible {
+  opacity: 1;
+  transform: translate(0) scale(1) rotate(0) perspective(1000px) rotateY(0);
+}
+
+/* Staggered animation delays for children */
+.stagger-children > *:nth-child(1) {
+  transition-delay: 0.1s;
+}
+.stagger-children > *:nth-child(2) {
+  transition-delay: 0.2s;
+}
+.stagger-children > *:nth-child(3) {
+  transition-delay: 0.3s;
+}
+.stagger-children > *:nth-child(4) {
+  transition-delay: 0.4s;
+}
+.stagger-children > *:nth-child(5) {
+  transition-delay: 0.5s;
+}
+.stagger-children > *:nth-child(6) {
+  transition-delay: 0.6s;
+}
+.stagger-children > *:nth-child(7) {
+  transition-delay: 0.7s;
+}
+.stagger-children > *:nth-child(8) {
+  transition-delay: 0.8s;
+}
+.stagger-children > *:nth-child(9) {
+  transition-delay: 0.9s;
+}
+.stagger-children > *:nth-child(10) {
+  transition-delay: 1s;
+}
+
+/* Enhanced shimmer animation */
+@keyframes enhanced-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-enhanced-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(var(--card-bg), 0),
+    rgba(var(--primary), 0.1),
+    rgba(var(--card-bg), 0)
+  );
+  background-size: 200% 100%;
+  animation: enhanced-shimmer 3s infinite linear;
+}
+
+/* Custom hover effects for cards */
+.card-hover-effect {
+  transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    box-shadow 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.card-hover-effect:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Glow effect on hover */
+.hover-glow {
+  position: relative;
+  overflow: hidden;
+}
+
+.hover-glow::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle,
+    rgba(var(--primary), 0.3) 0%,
+    transparent 70%
+  );
+  opacity: 0;
+  transform: scale(0.5);
+  transition: opacity 0.8s, transform 0.8s;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.hover-glow:hover::after {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Responsive Design Helpers */
+.mobile-only {
+  @apply hidden;
+}
+
+.desktop-only {
+  @apply block;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .mobile-only {
+    @apply block;
+  }
+
+  .desktop-only {
+    @apply hidden;
+  }
+
+  /* Adjust text sizes for mobile */
+  h1 {
+    font-size: 2.5rem !important;
+    line-height: 1.1 !important;
+  }
+
+  h2 {
+    font-size: 2rem !important;
+    line-height: 1.2 !important;
+  }
+
+  /* Improved padding for mobile */
+  .container {
+    @apply px-4;
+  }
+
+  .section {
+    @apply py-8;
+  }
+
+  /* Better responsive cards */
+  .card {
+    @apply max-w-full;
+  }
+
+  /* Stack grid items on mobile */
+  .responsive-grid {
+    @apply grid-cols-1 gap-6;
+  }
+
+  /* Mobile optimized buttons */
+  .btn,
+  .btn-secondary {
+    @apply min-w-0 w-full justify-center text-center px-4 py-3;
+  }
+
+  .btn-group-mobile {
+    @apply flex flex-col w-full gap-3;
+  }
+
+  /* Adjust spacing for mobile */
+  .mobile-mt-4 {
+    @apply mt-4;
+  }
+
+  .mobile-mb-4 {
+    @apply mb-4;
+  }
+
+  .mobile-my-4 {
+    @apply my-4;
+  }
+
+  .mobile-px-2 {
+    @apply px-2;
+  }
+
+  .mobile-py-2 {
+    @apply py-2;
+  }
+
+  /* Improve mobile menu */
+  .mobile-menu-item {
+    @apply text-xl py-3 font-medium text-gray-800 dark:text-white;
+  }
+
+  /* Adjust animations for mobile */
+  .reduce-motion {
+    @media (prefers-reduced-motion: reduce) {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+}
+
+/* Mobile-first media queries for mouse effects */
+@media (hover: hover) and (pointer: fine) {
+  .mouse-effect-only {
+    @apply block;
+  }
+}
+
+@media (hover: none) or (pointer: coarse) {
+  .mouse-effect-only {
+    @apply hidden;
+  }
+
+  /* Disable hover effects on touch devices */
+  .hover-glow::after {
+    display: none;
+  }
+
+  .card-hover-effect:hover {
+    transform: none;
+    box-shadow: var(--card-shadow);
+  }
+}
+
+/* Smooth transitions for mouse follow effect between sections */
+.mouse-glow-transition {
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    height 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    background-image 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: width, height, background-image, opacity, transform;
+}
+
+@keyframes glow-morph {
+  0% {
+    transform: translate(-50%, -50%) scale(0.9);
+    filter: blur(40px);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    filter: blur(32px);
+  }
+}
+
+@keyframes glow-exit-morph {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(0.9);
+    opacity: 0;
+  }
+}
+
+.glow-enter-animation {
+  animation: glow-morph 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.glow-exit-animation {
+  animation: glow-exit-morph 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Additional performance improvements for the glow effect */
+.pointer-events-none {
+  pointer-events: none;
+}
+
+.blur-2xl {
+  filter: blur(32px);
+  will-change: filter, opacity;
+}
+
+/* Fix for mobile devices */
+@media (hover: none) or (pointer: coarse) {
+  .mouse-glow-transition {
+    display: none;
+  }
+}
+
+/* Mouse Follow Effect Animations */
+@keyframes glow-enter {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+    filter: blur(60px);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+    filter: blur(calc(var(--blur, 90) * 1px));
+  }
+}
+
+@keyframes glow-exit {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+}
+
+.animate-glow-enter {
+  animation: glow-enter 0.5s ease-out forwards;
+}
+
+.animate-glow-exit {
+  animation: glow-exit 0.5s ease-in forwards;
+}
+
+/* Transitions for moving between sections */
+.pointer-events-none {
+  pointer-events: none;
+}
+
+.transition-opacity {
+  transition-property: opacity;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 500ms;
+}
+
+/* Make sure only the active section's glow is visible */
+[data-section-id] > div {
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
 }

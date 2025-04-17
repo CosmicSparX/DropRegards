@@ -1,0 +1,10 @@
+flask==2.3.3
+pyjwt==2.8.0
+pymongo==4.5.0
+certifi==2023.7.22
+flask-cors==4.0.0
+solana==0.29.2
+PyNaCl==1.5.0
+base58==2.1.1
+python-dotenv==1.0.0
+gunicorn==21.2.0 
