@@ -227,6 +227,17 @@ h6 {
   }
 }
 
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @keyframes scaleIn {
   from {
     opacity: 0;
@@ -263,6 +274,10 @@ h6 {
 
 .animate-slideUp {
   animation: slideUp 0.8s ease forwards;
+}
+
+.animate-slideDown {
+  animation: slideDown 0.5s ease forwards;
 }
 
 .animate-scaleIn {
@@ -303,6 +318,146 @@ h6 {
 
 .delay-500 {
   animation-delay: 0.5s;
+}
+
+/* Pulse animation for primary CTA */
+@keyframes pulse-shadow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(var(--primary), 0.5);
+  }
+  70% {
+    box-shadow: 0 0 0 12px rgba(var(--primary), 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(var(--primary), 0);
+  }
+}
+
+.animate-pulse-shadow {
+  animation: pulse-shadow 2s infinite;
+}
+
+/* Squiggly arrow animation */
+@keyframes draw-arrow {
+  0% {
+    stroke-dashoffset: 340;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes arrow-bounce {
+  0%,
+  60% {
+    transform: translateX(0);
+  }
+  70% {
+    transform: translateX(5px);
+  }
+  80% {
+    transform: translateX(0);
+  }
+  90% {
+    transform: translateX(5px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+/* New spiral arrow drawing animation */
+.spiral-arrow path {
+  stroke-dasharray: 400;
+  stroke-dashoffset: 400;
+  animation: draw-spiral 3s ease forwards;
+}
+
+@keyframes draw-spiral {
+  0% {
+    stroke-dashoffset: 400;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Custom arrow animation */
+.custom-arrow path {
+  stroke-dasharray: 700;
+  stroke-dashoffset: 700;
+  animation: draw-custom-arrow 3s ease-out forwards;
+}
+
+@keyframes draw-custom-arrow {
+  0% {
+    stroke-dashoffset: 700;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Exact arrow animation */
+.exact-arrow path {
+  stroke-dasharray: 1500;
+  stroke-dashoffset: 1500;
+  animation: draw-exact-arrow 5s ease-out forwards;
+}
+
+@keyframes draw-exact-arrow {
+  0% {
+    stroke-dashoffset: 1500;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Original SVG arrow animation */
+.original-arrow path {
+  stroke-dasharray: 10000;
+  stroke-dashoffset: 10000;
+  animation: draw-original-arrow 8s ease-out forwards;
+}
+
+@keyframes draw-original-arrow {
+  0% {
+    stroke-dashoffset: 10000;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+.squiggly-arrow path,
+.arrow-animation path {
+  stroke-dasharray: 140;
+  stroke-dashoffset: 140;
+  animation: draw-arrow 2s ease forwards,
+    arrow-bounce 2s 2s ease-in-out infinite;
+}
+
+/* Gradient Border */
+.border-gradient {
+  position: relative;
+  border-bottom: none !important;
+}
+
+.border-gradient::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(124, 58, 237, 0.5),
+    rgba(236, 72, 153, 0.5),
+    transparent
+  );
 }
 
 /* Custom scrollbar */
@@ -354,4 +509,96 @@ select {
 
 .overflow-ellipsis {
   @apply overflow-hidden whitespace-nowrap text-ellipsis;
+}
+
+/* Custom wallet adapter styling */
+.wallet-adapter-button-container {
+  margin: 0 auto;
+}
+
+.wallet-adapter-button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 0.75rem !important;
+  font-weight: 500 !important;
+  transition: all 0.3s ease !important;
+  padding: 0 1.25rem !important;
+  background-image: var(--gradient-button) !important;
+  box-shadow: 0 4px 12px rgba(var(--primary), 0.2) !important;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif !important;
+  height: 48px !important;
+  min-width: 200px !important;
+}
+
+.wallet-adapter-button:hover {
+  background-color: transparent !important;
+  background-image: var(--gradient-button) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 20px rgba(var(--primary), 0.3) !important;
+}
+
+.wallet-adapter-button-trigger {
+  background-image: var(--gradient-button) !important;
+}
+
+.wallet-adapter-modal-wrapper {
+  background: rgb(var(--card-bg)) !important;
+  border: 1px solid rgba(var(--card-border), 0.2) !important;
+  box-shadow: var(--card-shadow) !important;
+}
+
+.wallet-adapter-modal-title {
+  color: rgb(var(--foreground)) !important;
+  font-family: "Space Grotesk", sans-serif !important;
+}
+
+.wallet-adapter-modal-content {
+  color: rgb(var(--foreground)) !important;
+}
+
+.wallet-adapter-modal-list .wallet-adapter-button {
+  background: transparent !important;
+  color: rgb(var(--foreground)) !important;
+  border: 1px solid rgba(var(--card-border), 0.2) !important;
+  box-shadow: none !important;
+}
+
+.wallet-adapter-modal-list .wallet-adapter-button:hover {
+  background: rgba(var(--primary), 0.05) !important;
+  border-color: rgba(var(--primary), 0.3) !important;
+}
+
+.wallet-adapter-modal-list-more {
+  color: rgb(var(--primary)) !important;
+}
+
+.wallet-adapter-modal-list-more-icon {
+  fill: rgb(var(--primary)) !important;
+}
+
+/* Simple Arrow Animation */
+.simple-arrow {
+  stroke-dasharray: 300;
+  stroke-dashoffset: 300;
+  animation: draw-simple-arrow 2s forwards;
+}
+
+@keyframes draw-simple-arrow {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Original Arrow Animation */
+.original-arrow path {
+  stroke-dasharray: 1500;
+  stroke-dashoffset: 1500;
+  animation: draw-original-arrow 8s forwards;
+}
+
+@keyframes draw-original-arrow {
+  to {
+    stroke-dashoffset: 0;
+  }
 }

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
+import { WalletProviders } from "./providers";
 
 const inter = Inter({ 
   subsets: ["latin"], 
@@ -17,7 +18,7 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   title: "DropRegards | Send SOL with a Personal Touch",
-  description: "Send SOL tokens with personal messages and custom NFTs to show appreciation to colleagues and friends.",
+  description: "Send SOL tokens with personal messages and custom NFTs to show appreciation to others.",
 };
 
 export default function RootLayout({
@@ -48,7 +49,9 @@ export default function RootLayout({
         }} />
       </head>
       <body className="font-sans antialiased text-slate-800 dark:text-slate-200 min-h-screen flex flex-col">
-        {children}
+        <WalletProviders>
+          {children}
+        </WalletProviders>
       </body>
     </html>
   );

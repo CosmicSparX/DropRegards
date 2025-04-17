@@ -1,9 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
+import FloatingNavbar from "./components/FloatingNavbar";
 
 export default function Home() {
   return (
     <main>
+      {/* Floating Navbar */}
+      <FloatingNavbar />
+
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center">
         {/* Background Elements */}
@@ -25,15 +29,9 @@ export default function Home() {
                 Send Solana, personalized messages, and custom NFTs to show appreciation to the people who matter most.
               </p>
               <div className="flex flex-wrap gap-4">
-                <Link href="/create" className="btn">
+                <Link href="/create" className="btn text-lg px-8 py-4 min-w-[200px] h-auto shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 animate-pulse-shadow">
                   Get Started
                 </Link>
-                <a href="#how-it-works" className="btn-secondary">
-                  <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  Learn More
-                </a>
               </div>
             </div>
             <div className="relative animate-scaleIn">

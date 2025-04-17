@@ -1,35 +1,63 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { CheckCircleIcon } from "@heroicons/react/24/solid";
+import { CheckCircleIcon, ExclamationCircleIcon } from "@heroicons/react/24/solid";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 
 export default function Create() {
+  const { connected, publicKey, connecting, disconnect } = useWallet();
   const [step, setStep] = useState(1);
-  const [connected, setConnected] = useState(false);
   const [username, setUsername] = useState("");
   const [bio, setBio] = useState("");
   const [profileImage, setProfileImage] = useState(""); 
   const [submitted, setSubmitted] = useState(false);
   const [generatedLink, setGeneratedLink] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const connectWallet = () => {
-    // Simulate wallet connection
-    setTimeout(() => {
-      setConnected(true);
+  // Handle wallet connection changes
+  useEffect(() => {
+    if (connected && publicKey) {
+      // If wallet is connected, move to profile creation step
       setStep(2);
-    }, 1000);
-  };
+    }
+  }, [connected, publicKey]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
     
-    // Generate link based on username
-    const link = `dropregards.io/${username.toLowerCase().replace(/\s+/g, '-')}`;
-    setGeneratedLink(link);
-    setSubmitted(true);
-    setStep(3);
+    try {
+      // Generate link based on username
+      const sanitizedUsername = username.toLowerCase().replace(/[^a-z0-9]/g, '-');
+      const link = `dropregards.io/send/${sanitizedUsername}`;
+      
+      // Simulate backend interaction
+      setTimeout(() => {
+        setGeneratedLink(link);
+        setSubmitted(true);
+        setStep(3);
+        setIsLoading(false);
+      }, 1000);
+    } catch (err) {
+      console.error("Profile creation error:", err);
+      setError("Failed to create your profile. Please try again.");
+      setIsLoading(false);
+    }
+  };
+
+  const handleDisconnect = () => {
+    disconnect();
+    setStep(1);
+  };
+
+  // Helper function to truncate wallet address
+  const truncateAddress = (address: string): string => {
+    if (!address) return '';
+    return `${address.slice(0, 6)}...${address.slice(-4)}`;
   };
 
   return (
@@ -48,7 +76,7 @@ export default function Create() {
             </svg>
             Back to Home
           </Link>
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">Create Your DropLink</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-4 gradient-text">Create Your DropLink</h1>
           <p className="text-gray-600 dark:text-gray-300 max-w-xl mx-auto">
             Set up your personalized page to receive SOL and messages from anyone
           </p>
@@ -92,6 +120,14 @@ export default function Create() {
           </div>
 
           <div className="p-6 md:p-8">
+            {/* Error message display */}
+            {error && (
+              <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-700 dark:text-red-400 flex items-start animate-fadeIn">
+                <ExclamationCircleIcon className="w-5 h-5 mr-3 mt-0.5 flex-shrink-0" />
+                <p>{error}</p>
+              </div>
+            )}
+
             {/* Step 1: Connect Wallet */}
             {step === 1 && (
               <div className="animate-fadeIn">
@@ -100,22 +136,11 @@ export default function Create() {
                   Choose your wallet provider to get started with DropRegards
                 </p>
                 
-                <div className="grid md:grid-cols-2 gap-4 mb-8">
-                  <button 
-                    onClick={connectWallet}
-                    className="flex items-center justify-center p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors"
-                  >
-                    <Image src="/images/phantom.png" alt="Phantom" width={30} height={30} className="mr-3" />
-                    <span>Phantom</span>
-                  </button>
-                  
-                  <button 
-                    onClick={connectWallet}
-                    className="flex items-center justify-center p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors"
-                  >
-                    <Image src="/images/solflare.png" alt="Solflare" width={30} height={30} className="mr-3" />
-                    <span>Solflare</span>
-                  </button>
+                <div className="flex justify-center mb-8">
+                  {/* Custom styling for WalletMultiButton */}
+                  <div className="wallet-adapter-button-container">
+                    <WalletMultiButton className="wallet-adapter-button" />
+                  </div>
                 </div>
                 
                 <div className="text-center text-sm text-gray-500 dark:text-gray-400">
@@ -134,6 +159,25 @@ export default function Create() {
                 <p className="text-gray-600 dark:text-gray-300 mb-6">
                   Customize how your DropLink page will appear to others
                 </p>
+                
+                {publicKey && (
+                  <div className="mb-6 p-4 bg-green-50 dark:bg-green-900/10 border border-green-100 dark:border-green-900 rounded-lg">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center">
+                        <div className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></div>
+                        <p className="text-sm text-gray-700 dark:text-gray-300">
+                          Connected: <span className="font-mono">{truncateAddress(publicKey.toString())}</span>
+                        </p>
+                      </div>
+                      <button
+                        onClick={handleDisconnect}
+                        className="text-sm text-red-600 dark:text-red-400 hover:underline"
+                      >
+                        Disconnect
+                      </button>
+                    </div>
+                  </div>
+                )}
                 
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div>
@@ -196,9 +240,16 @@ export default function Create() {
                     <button 
                       type="submit"
                       className="btn"
-                      disabled={!username.trim()}
+                      disabled={!username.trim() || isLoading}
                     >
-                      Create DropLink
+                      {isLoading ? (
+                        <>
+                          <div className="mr-2 animate-spin rounded-full h-4 w-4 border-2 border-b-transparent border-white"></div>
+                          Creating...
+                        </>
+                      ) : (
+                        "Create DropLink"
+                      )}
                     </button>
                   </div>
                 </form>
