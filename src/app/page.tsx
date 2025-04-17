@@ -17,7 +17,7 @@ export default function Home() {
     
     // Check if mobile device
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
+      setIsMobile(window.innerWidth < 768 || window.matchMedia('(hover: none)').matches);
     };
     
     // Initial check
@@ -44,12 +44,11 @@ export default function Home() {
         {/* Hero Section */}
         <MouseFollowEffect 
           disabled={isMobile}
-          glowColor="rgba(124, 58, 237, 0.5)"
-          glowSize={240}
+          glowColor="rgba(124, 58, 237, 0.6)"
+          glowSize={260}
           glowOpacity={0.7}
-          speed={0.15}
           useGradient
-          secondaryColor="rgba(251, 113, 133, 0.3)"
+          secondaryColor="rgba(251, 113, 133, 0.4)"
           className="w-full"
           sectionId="hero"
         >
@@ -176,13 +175,11 @@ export default function Home() {
         {/* Features Section */}
         <MouseFollowEffect 
           disabled={isMobile}
-          glowColor="rgba(56, 189, 248, 0.35)"
-          glowSize={200}
-          glowOpacity={0.6}
-          speed={0.25}
-          pulse
+          glowColor="rgba(56, 189, 248, 0.5)"
+          glowSize={240}
+          glowOpacity={0.7}
           useGradient
-          secondaryColor="rgba(16, 185, 129, 0.25)"
+          secondaryColor="rgba(16, 185, 129, 0.4)"
           className="w-full"
           sectionId="features"
         >
@@ -258,13 +255,11 @@ export default function Home() {
         {/* Testimonial Section */}
         <MouseFollowEffect 
           disabled={isMobile}
-          glowColor="rgba(251, 113, 133, 0.4)"
-          glowSize={220}
-          glowOpacity={0.55}
-          speed={0.2}
-          pulse
+          glowColor="rgba(251, 113, 133, 0.6)"
+          glowSize={240}
+          glowOpacity={0.7}
           useGradient
-          secondaryColor="rgba(253, 186, 116, 0.25)"
+          secondaryColor="rgba(253, 186, 116, 0.4)"
           className="w-full"
           sectionId="testimonials"
         >
@@ -301,13 +296,11 @@ export default function Home() {
         {/* CTA Section */}
         <MouseFollowEffect 
           disabled={isMobile}
-          glowColor="rgba(139, 92, 246, 0.4)"
-          glowSize={260}
-          glowOpacity={0.65}
-          speed={0.15}
+          glowColor="rgba(139, 92, 246, 0.6)"
+          glowSize={280}
+          glowOpacity={0.75}
           useGradient
-          secondaryColor="rgba(56, 189, 248, 0.3)"
-          pulse
+          secondaryColor="rgba(56, 189, 248, 0.4)"
           className="w-full"
           sectionId="cta"
         >

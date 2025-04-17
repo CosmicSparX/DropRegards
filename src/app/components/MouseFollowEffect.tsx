@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import { useMousePosition } from '../components/GlobalMouseEffect';
 
 interface MouseFollowEffectProps {
@@ -32,33 +32,31 @@ export default function MouseFollowEffect({
 }: MouseFollowEffectProps) {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
-  const [isTransitioning, setIsTransitioning] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const glowRef = useRef<HTMLDivElement>(null);
-  const { globalMousePosition, setGlobalVisibleSection, visibleSection, previousSection } = useMousePosition();
+  const lastUpdateRef = useRef(0);
+  const { globalMousePosition, setGlobalVisibleSection, visibleSection, previousSection, isScrolling } = useMousePosition();
   
   const isActive = visibleSection === sectionId;
-  const wasActive = previousSection === sectionId;
 
   // Handle mouse interaction
   const handleMouseEnter = () => {
     if (!disabled && sectionId) {
       setIsHovering(true);
       setGlobalVisibleSection(sectionId);
-      setIsTransitioning(true);
-      setTimeout(() => setIsTransitioning(false), 500);
     }
   };
 
   const handleMouseLeave = () => {
     if (!disabled) {
       setIsHovering(false);
-      // Don't immediately set section to null - this will be handled globally
     }
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (!disabled && containerRef.current) {
+    if (disabled || isScrolling) return;
+    
+    if (containerRef.current) {
       const rect = containerRef.current.getBoundingClientRect();
       setMousePosition({
         x: e.clientX - rect.left,
@@ -70,6 +68,11 @@ export default function MouseFollowEffect({
   // Update mouse position for active section
   useEffect(() => {
     if (disabled || !containerRef.current || !isActive) return;
+    
+    // Reduce updates during scroll for better performance
+    const now = Date.now();
+    if (isScrolling && now - lastUpdateRef.current < 100) return;
+    lastUpdateRef.current = now;
     
     // Calculate position relative to container when mouse is outside but section is active
     const rect = containerRef.current.getBoundingClientRect();
@@ -111,28 +114,28 @@ export default function MouseFollowEffect({
         y: globalMousePosition.y - rect.top
       });
     }
-  }, [globalMousePosition, isActive, disabled]);
+  }, [globalMousePosition, isActive, disabled, isScrolling]);
 
-  // Handle section transitions
+  // Handle active section state
   useEffect(() => {
     if (isActive && !isHovering) {
       setIsHovering(true);
-      setIsTransitioning(true);
-      setTimeout(() => setIsTransitioning(false), 500);
-    } else if (!isActive && isHovering && wasActive) {
-      setIsTransitioning(true);
-      setTimeout(() => {
-        setIsHovering(false);
-        setIsTransitioning(false);
-      }, 500);
+    } else if (!isActive && isHovering) {
+      setIsHovering(false);
     }
-  }, [isActive, isHovering, wasActive]);
+  }, [isActive, isHovering]);
   
   // Generate the glow style
   const backgroundValue = useGradient 
     ? `radial-gradient(circle, ${glowColor} 0%, ${secondaryColor || 'rgba(56, 128, 255, 0.1)'} 40%, transparent 70%)`
     : `radial-gradient(circle, ${glowColor} 0%, rgba(56, 128, 255, 0.1) 40%, transparent 70%)`;
-  
+
+  // Add classes for pulse effect if enabled
+  const animationClass = pulse ? 'animate-pulse-slow' : '';
+
+  // Determine opacity - reduce it during scrolling
+  const currentOpacity = isScrolling ? glowOpacity * 0.6 : glowOpacity;
+
   return (
     <div 
       ref={containerRef}
@@ -147,9 +150,7 @@ export default function MouseFollowEffect({
       {!disabled && (isHovering || isActive) && (
         <div 
           ref={glowRef}
-          className={`pointer-events-none absolute blur-2xl rounded-full transition-opacity ${
-            isTransitioning ? (isActive ? "animate-glow-enter" : "animate-glow-exit") : ""
-          }`}
+          className={`pointer-events-none absolute blur-2xl rounded-full ${animationClass}`}
           style={{ 
             left: `${mousePosition.x}px`, 
             top: `${mousePosition.y}px`,
@@ -157,9 +158,9 @@ export default function MouseFollowEffect({
             height: `${glowSize}px`,
             backgroundImage: backgroundValue,
             transform: 'translate(-50%, -50%)',
-            opacity: isHovering || isActive ? glowOpacity : 0,
-            transition: "opacity 0.5s ease-in-out",
-            zIndex: 1,
+            opacity: currentOpacity,
+            zIndex: -1,
+            willChange: 'left, top, opacity',
           }}
         />
       )}

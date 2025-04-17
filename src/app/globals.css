@@ -1031,101 +1031,44 @@ select {
   }
 }
 
-/* Smooth transitions for mouse follow effect between sections */
-.mouse-glow-transition {
-  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1),
-    height 0.5s cubic-bezier(0.4, 0, 0.2, 1),
-    background-image 0.6s cubic-bezier(0.4, 0, 0.2, 1),
-    opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1),
-    transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  will-change: width, height, background-image, opacity, transform;
-}
-
-@keyframes glow-morph {
-  0% {
-    transform: translate(-50%, -50%) scale(0.9);
-    filter: blur(40px);
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(1);
-    filter: blur(32px);
-  }
-}
-
-@keyframes glow-exit-morph {
-  0% {
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 1;
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(0.9);
-    opacity: 0;
-  }
-}
-
-.glow-enter-animation {
-  animation: glow-morph 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-}
-
-.glow-exit-animation {
-  animation: glow-exit-morph 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-/* Additional performance improvements for the glow effect */
-.pointer-events-none {
-  pointer-events: none;
-}
-
-.blur-2xl {
-  filter: blur(32px);
-  will-change: filter, opacity;
-}
-
 /* Fix for mobile devices */
 @media (hover: none) or (pointer: coarse) {
-  .mouse-glow-transition {
+  .blur-2xl {
     display: none;
   }
 }
 
 /* Mouse Follow Effect Animations */
-@keyframes glow-enter {
-  0% {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.8);
-    filter: blur(60px);
-  }
+@keyframes pulse-slow {
+  0%,
   100% {
-    opacity: 1;
     transform: translate(-50%, -50%) scale(1);
-    filter: blur(calc(var(--blur, 90) * 1px));
-  }
-}
-
-@keyframes glow-exit {
-  0% {
     opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
   }
-  100% {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.8);
+  50% {
+    transform: translate(-50%, -50%) scale(1.1);
+    opacity: 0.8;
   }
 }
 
-.animate-glow-enter {
-  animation: glow-enter 0.5s ease-out forwards;
+.animate-pulse-slow {
+  animation: pulse-slow 3s ease-in-out infinite;
 }
 
-.animate-glow-exit {
-  animation: glow-exit 0.5s ease-in forwards;
-}
-
-/* Transitions for moving between sections */
+/* Pointer events control */
 .pointer-events-none {
   pointer-events: none;
 }
 
+/* Blur helper */
+.blur-2xl {
+  filter: blur(32px);
+  will-change: filter, opacity, transform;
+  transform: translate(-50%, -50%);
+  backface-visibility: hidden;
+}
+
+/* Transitions for smooth effect */
 .transition-opacity {
   transition-property: opacity;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
