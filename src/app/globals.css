@@ -287,7 +287,7 @@ h6 {
   }
 }
 
-/* Slower, more subtle pulse animation for mouse follow effect */
+/* Mouse Follow Effect Animations */
 @keyframes pulse-slow {
   0%,
   100% {
@@ -300,8 +300,62 @@ h6 {
   }
 }
 
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0.1;
+  }
+}
+
+@keyframes glow-in {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.7);
+    filter: blur(20px);
+  }
+  70% {
+    opacity: 0.9;
+    transform: translate(-50%, -50%) scale(1.05);
+    filter: blur(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+    filter: blur(32px);
+  }
+}
+
+@keyframes glow-out {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+    filter: blur(32px);
+    visibility: visible;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5);
+    filter: blur(20px);
+    visibility: hidden;
+  }
+}
+
 .animate-pulse-slow {
   animation: pulse-slow 3s ease-in-out infinite;
+}
+
+.animate-fade-out {
+  animation: fade-out 1.5s ease-out forwards;
+}
+
+.animate-glow-in {
+  animation: glow-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.animate-glow-out {
+  animation: glow-out 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 .animate-fadeIn {
@@ -1038,23 +1092,6 @@ select {
   }
 }
 
-/* Mouse Follow Effect Animations */
-@keyframes pulse-slow {
-  0%,
-  100% {
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: translate(-50%, -50%) scale(1.1);
-    opacity: 0.8;
-  }
-}
-
-.animate-pulse-slow {
-  animation: pulse-slow 3s ease-in-out infinite;
-}
-
 /* Pointer events control */
 .pointer-events-none {
   pointer-events: none;
@@ -1066,6 +1103,11 @@ select {
   will-change: filter, opacity, transform;
   transform: translate(-50%, -50%);
   backface-visibility: hidden;
+}
+
+/* Fast transition for active state */
+.blur-2xl.active {
+  transition: opacity 0.2s ease-out;
 }
 
 /* Transitions for smooth effect */

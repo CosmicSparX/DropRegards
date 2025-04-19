@@ -7,6 +7,13 @@ import FloatingNavbar from "./components/FloatingNavbar";
 import MouseFollowEffect from "./components/MouseFollowEffect";
 import GlobalMouseEffect from "./components/GlobalMouseEffect";
 import { initScrollAnimations } from "./utils/scrollAnimations";
+import dynamic from "next/dynamic";
+
+// Dynamically import wallet components with ssr disabled to prevent hydration errors
+const WalletButton = dynamic(
+  () => import('./components/WalletButton'),
+  { ssr: false }
+);
 
 export default function Home() {
   const [isMobile, setIsMobile] = useState(false);
@@ -78,6 +85,7 @@ export default function Home() {
                     >
                       Get Started
                     </Link>
+                    <WalletButton />
                   </div>
                 </div>
                 <div className="relative scroll-animate">
