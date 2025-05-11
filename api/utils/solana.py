@@ -126,4 +126,4 @@ def verify_transaction(signature, expected_sender, expected_receiver, expected_a
         return False
     except Exception as e:
         print(f"Transaction verification error: {str(e)}")
-        return False 
+        return False

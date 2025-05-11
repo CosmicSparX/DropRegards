@@ -5,8 +5,33 @@ import Image from "next/image";
 import Link from "next/link";
 import { CheckCircleIcon, ClipboardIcon } from '@heroicons/react/24/outline';
 import { regardsService, Regard } from "../api/regardsService";
+import { useRouter } from "next/navigation";
+import { useWallet } from "@solana/wallet-adapter-react";
 
-export default function Dashboard() {
+export default function DashboardRedirect() {
+  const router = useRouter();
+  const { connected, publicKey } = useWallet();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Default username for demo purposes
+    const defaultUsername = "dummy";
+    
+    // Redirect to user's dashboard if connected, otherwise to demo
+    const username = connected && publicKey ? "user" : defaultUsername;
+    
+    // Redirect to the dynamic dashboard route
+    router.replace(`/dashboard/${username}`);
+  }, [router, connected, publicKey]);
+
+  return (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
+    </div>
+  );
+}
+
+export function Dashboard() {
   const [regards, setRegards] = useState<Regard[]>([]);
   const [totalSol, setTotalSol] = useState(0);
   const [shareLink, setShareLink] = useState('');
@@ -267,19 +292,19 @@ export default function Dashboard() {
               </div>
               <div className="flex space-x-2">
                 <button
-                  className={`btn-sm ${activeTab === 'all' ? 'btn-primary' : 'btn-ghost'}`}
+                  className={`inline-flex items-center justify-center btn-sm ${activeTab === 'all' ? 'btn-primary' : 'btn-ghost'}`}
                   onClick={() => setActiveTab('all')}
                 >
                   All
                 </button>
                 <button
-                  className={`btn-sm ${activeTab === 'recent' ? 'btn-primary' : 'btn-ghost'}`}
+                  className={`inline-flex items-center justify-center btn-sm ${activeTab === 'recent' ? 'btn-primary' : 'btn-ghost'}`}
                   onClick={() => setActiveTab('recent')}
                 >
                   Recent
                 </button>
                 <button
-                  className={`btn-sm ${activeTab === 'nft' ? 'btn-primary' : 'btn-ghost'}`}
+                  className={`inline-flex items-center justify-center btn-sm ${activeTab === 'nft' ? 'btn-primary' : 'btn-ghost'}`}
                   onClick={() => setActiveTab('nft')}
                 >
                   With NFTs

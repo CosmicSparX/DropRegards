@@ -4,6 +4,9 @@ from pymongo import MongoClient
 import certifi
 import logging
 
+
+
+
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -25,7 +28,8 @@ def get_db():
     
     try:
         # Get MongoDB connection string from environment variable
-        mongo_uri = os.environ.get('MONGODB_URI')
+        mongo_uri = os.getenv('MONGODB_URI')
+        print(mongo_uri)
         
         if not mongo_uri:
             # Use a default connection string for local development

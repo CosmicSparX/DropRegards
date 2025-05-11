@@ -178,7 +178,7 @@ export default function FloatingNavbar() {
               {/* Get Started button */}
               <Link 
                 href="/create" 
-                className="hidden md:flex btn text-sm md:text-base px-4 md:px-6 py-2 min-w-[140px] h-auto shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 animate-pulse-shadow"
+                className="hidden md:inline-flex items-center justify-center btn text-sm md:text-base px-4 md:px-6 py-2 min-w-[140px] h-auto shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 animate-pulse-shadow"
               >
                 <span className="relative z-10">Get Started</span>
               </Link>

@@ -224,6 +224,28 @@ h6 {
   font-weight: 500;
 }
 
+.btn-primary {
+  @apply inline-flex items-center justify-center rounded-xl font-medium transition-all px-4 py-2 text-white;
+  background-image: var(--gradient-button);
+  box-shadow: 0 2px 8px rgba(var(--primary), 0.2);
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  min-width: auto;
+  height: 38px;
+  font-weight: 500;
+}
+
+.btn-ghost {
+  @apply inline-flex items-center justify-center rounded-xl font-medium transition-all px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  min-width: auto;
+  height: 38px;
+  font-weight: 500;
+}
+
 /* Text gradients */
 .gradient-text {
   background-clip: text;
