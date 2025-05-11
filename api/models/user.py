@@ -1,6 +1,11 @@
-from datetime import datetime
+from datetime import datetime, UTC
 from api.db import get_db
 import pymongo
+try:
+    from bson import ObjectId
+except ImportError:
+    # Fallback for various pymongo package configurations
+    from pymongo.bson.objectid import ObjectId
 
 # User schema:
 # {
@@ -24,27 +29,18 @@ def create_user(user_data):
     Returns:
         dict: Created user document
     """
-    # This is a placeholder - in production, replace with actual database implementation
+    db = get_db()
+    user_collection = db.users
     
-    # Example MongoDB implementation:
-    # db = get_db()
-    # user_collection = db.users
+    # Add timestamps
+    now = datetime.now(UTC)
+    user_data['createdAt'] = now
+    user_data['updatedAt'] = now
     
-    # # Add timestamps
-    # now = datetime.utcnow()
-    # user_data['createdAt'] = now
-    # user_data['updatedAt'] = now
+    # Insert document
+    result = user_collection.insert_one(user_data)
+    user_data['_id'] = str(result.inserted_id)
     
-    # # Insert document
-    # result = user_collection.insert_one(user_data)
-    # user_data['_id'] = result.inserted_id
-    
-    # return user_data
-    
-    # Placeholder implementation
-    user_data['_id'] = 'mock-user-id'
-    user_data['createdAt'] = datetime.utcnow()
-    user_data['updatedAt'] = datetime.utcnow()
     return user_data
 
 def update_user(wallet_address, update_data):
@@ -58,36 +54,23 @@ def update_user(wallet_address, update_data):
     Returns:
         dict: Updated user document or None if user not found
     """
-    # This is a placeholder - in production, replace with actual database implementation
+    db = get_db()
+    user_collection = db.users
     
-    # Example MongoDB implementation:
-    # db = get_db()
-    # user_collection = db.users
+    # Add updated timestamp
+    update_data['updatedAt'] = datetime.now(UTC)
     
-    # # Add updated timestamp
-    # update_data['updatedAt'] = datetime.utcnow()
+    # Update document
+    result = user_collection.find_one_and_update(
+        {'walletAddress': wallet_address},
+        {'$set': update_data},
+        return_document=pymongo.ReturnDocument.AFTER
+    )
     
-    # # Update document
-    # result = user_collection.find_one_and_update(
-    #     {'walletAddress': wallet_address},
-    #     {'$set': update_data},
-    #     return_document=pymongo.ReturnDocument.AFTER
-    # )
+    if result:
+        result['_id'] = str(result['_id'])
     
-    # return result
-    
-    # Placeholder implementation
-    user_data = {
-        '_id': 'mock-user-id',
-        'walletAddress': wallet_address,
-        'username': 'username',
-        'displayName': update_data.get('displayName', 'Display Name'),
-        'bio': update_data.get('bio', 'User bio'),
-        'profileImage': update_data.get('profileImage', ''),
-        'createdAt': datetime.utcnow(),
-        'updatedAt': datetime.utcnow()
-    }
-    return user_data
+    return result
 
 def find_user_by_wallet(wallet_address):
     """
@@ -99,25 +82,14 @@ def find_user_by_wallet(wallet_address):
     Returns:
         dict: User document or None if not found
     """
-    # This is a placeholder - in production, replace with actual database implementation
+    db = get_db()
+    user_collection = db.users
+    user = user_collection.find_one({'walletAddress': wallet_address})
     
-    # Example MongoDB implementation:
-    # db = get_db()
-    # user_collection = db.users
-    # return user_collection.find_one({'walletAddress': wallet_address})
+    if user:
+        user['_id'] = str(user['_id'])
     
-    # Placeholder implementation
-    user_data = {
-        '_id': 'mock-user-id',
-        'walletAddress': wallet_address,
-        'username': 'username',
-        'displayName': 'Display Name',
-        'bio': 'User bio',
-        'profileImage': '',
-        'createdAt': datetime.utcnow(),
-        'updatedAt': datetime.utcnow()
-    }
-    return user_data
+    return user
 
 def find_user_by_username(username):
     """
@@ -129,25 +101,14 @@ def find_user_by_username(username):
     Returns:
         dict: User document or None if not found
     """
-    # This is a placeholder - in production, replace with actual database implementation
+    db = get_db()
+    user_collection = db.users
+    user = user_collection.find_one({'username': username})
     
-    # Example MongoDB implementation:
-    # db = get_db()
-    # user_collection = db.users
-    # return user_collection.find_one({'username': username})
+    if user:
+        user['_id'] = str(user['_id'])
     
-    # Placeholder implementation
-    user_data = {
-        '_id': 'mock-user-id',
-        'walletAddress': 'wallet_address',
-        'username': username,
-        'displayName': 'Display Name',
-        'bio': 'User bio',
-        'profileImage': '',
-        'createdAt': datetime.utcnow(),
-        'updatedAt': datetime.utcnow()
-    }
-    return user_data
+    return user
 
 def username_exists(username):
     """
@@ -159,12 +120,6 @@ def username_exists(username):
     Returns:
         bool: True if username exists, False otherwise
     """
-    # This is a placeholder - in production, replace with actual database implementation
-    
-    # Example MongoDB implementation:
-    # db = get_db()
-    # user_collection = db.users
-    # return user_collection.count_documents({'username': username}) > 0
-    
-    # Placeholder implementation
-    return False 
+    db = get_db()
+    user_collection = db.users
+    return user_collection.count_documents({'username': username}) > 0 

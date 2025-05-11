@@ -1,39 +1,25 @@
-'use client';
+"use client";
 
-import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
-import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
-import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
-import { PhantomWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets';
-import { clusterApiUrl } from '@solana/web3.js';
-import { ReactNode, useMemo } from 'react';
+import { ReactNode } from "react";
+import { ThemeProvider } from "next-themes";
+import dynamic from "next/dynamic";
 
-// Import the wallet adapter styles
-import '@solana/wallet-adapter-react-ui/styles.css';
+// Dynamically import WalletProvider to prevent SSR issues
+const WalletProviderWithNoSSR = dynamic(
+  () => import("./providers/WalletProvider"),
+  { ssr: false }
+);
 
-export function WalletProviders({ children }: { children: ReactNode }) {
-  // Define the network to use (devnet, testnet, or mainnet-beta)
-  const network = WalletAdapterNetwork.Devnet;
+interface ProvidersProps {
+  children: ReactNode;
+}
 
-  // Define the RPC endpoint URL based on the network
-  const endpoint = useMemo(() => clusterApiUrl(network), [network]);
-
-  // Initialize the wallet adapters
-  const wallets = useMemo(
-    () => [
-      new PhantomWalletAdapter(),
-      new SolflareWalletAdapter(),
-    ],
-    // Dependency array includes network to re-initialize wallets if network changes
-    [network]
-  );
-
+export default function Providers({ children }: ProvidersProps) {
   return (
-    <ConnectionProvider endpoint={endpoint}>
-      <WalletProvider wallets={wallets} autoConnect>
-        <WalletModalProvider>
-          {children}
-        </WalletModalProvider>
-      </WalletProvider>
-    </ConnectionProvider>
+    <ThemeProvider attribute="class">
+      <WalletProviderWithNoSSR>
+        {children}
+      </WalletProviderWithNoSSR>
+    </ThemeProvider>
   );
 } 

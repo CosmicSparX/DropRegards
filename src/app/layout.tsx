@@ -1,7 +1,7 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
-import { WalletProviders } from "./providers";
+import Providers from "./providers";
 
 const inter = Inter({ 
   subsets: ["latin"], 
@@ -16,15 +16,16 @@ const poppins = Poppins({
   display: 'swap'
 });
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
+
 export const metadata: Metadata = {
   title: "DropRegards | Send SOL with a Personal Touch",
   description: "Send SOL tokens with personal messages and custom NFTs to show appreciation to others.",
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 1,
-    userScalable: false,
-  },
 };
 
 export default function RootLayout({
@@ -55,9 +56,9 @@ export default function RootLayout({
         }} />
       </head>
       <body className="font-sans antialiased text-slate-800 dark:text-slate-200 min-h-screen flex flex-col m-0 p-0">
-        <WalletProviders>
+        <Providers>
           {children}
-        </WalletProviders>
+        </Providers>
       </body>
     </html>
   );

@@ -3,6 +3,7 @@ from functools import wraps
 import jwt
 import os
 from datetime import datetime
+from api.models.user import find_user_by_wallet
 
 def token_required(f):
     """
@@ -45,14 +46,16 @@ def token_required(f):
                 }), 401
             
             # Create current_user object from payload
-            current_user = {
-                'wallet_address': payload['sub']
-            }
+            wallet_address = payload['sub']
             
-            # TODO: Optionally fetch more user data from database
-            # user = find_user_by_wallet(current_user['wallet_address'])
-            # if user:
-            #     current_user.update(user)
+            # Fetch user data from database
+            user = find_user_by_wallet(wallet_address)
+            if user:
+                current_user = user
+            else:
+                current_user = {
+                    'wallet_address': wallet_address
+                }
             
         except jwt.ExpiredSignatureError:
             return jsonify({

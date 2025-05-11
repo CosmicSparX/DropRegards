@@ -33,7 +33,8 @@ export default function Create() {
     try {
       // Generate link based on username
       const sanitizedUsername = username.toLowerCase().replace(/[^a-z0-9]/g, '-');
-      const link = `dropregards.io/send/${sanitizedUsername}`;
+      const domain = typeof window !== 'undefined' ? window.location.origin : 'dropregards.io';
+      const link = `${domain}/send/${sanitizedUsername}`;
       
       // Simulate backend interaction
       setTimeout(() => {

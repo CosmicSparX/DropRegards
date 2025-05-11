@@ -110,6 +110,47 @@ module.exports = {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
+      animation: {
+        'float': 'float 6s ease-in-out infinite',
+        'float-slow': 'float 10s ease-in-out infinite',
+        'pulse-gentle': 'pulseGentle 3s ease-in-out infinite',
+        'pulse-slow': 'pulseSlow 7s ease-in-out infinite',
+        'slideUp': 'slideUp 0.5s ease-out',
+        'fadeIn': 'fadeIn 0.7s ease-out',
+        'scaleIn': 'scaleIn 0.5s ease-out',
+        'gradient': 'gradient 8s ease infinite',
+      },
+      keyframes: {
+        float: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-20px)' },
+        },
+        pulseGentle: {
+          '0%, 100%': { opacity: 1 },
+          '50%': { opacity: 0.7 },
+        },
+        pulseSlow: {
+          '0%, 100%': { opacity: 0.7 },
+          '50%': { opacity: 0.4 },
+        },
+        slideUp: {
+          '0%': { opacity: 0, transform: 'translateY(20px)' },
+          '100%': { opacity: 1, transform: 'translateY(0)' },
+        },
+        fadeIn: {
+          '0%': { opacity: 0 },
+          '100%': { opacity: 1 },
+        },
+        scaleIn: {
+          '0%': { opacity: 0, transform: 'scale(0.95)' },
+          '100%': { opacity: 1, transform: 'scale(1)' },
+        },
+        gradient: {
+          '0%': { backgroundPosition: '0% 50%' },
+          '50%': { backgroundPosition: '100% 50%' },
+          '100%': { backgroundPosition: '0% 50%' },
+        },
+      },
     },
   },
   plugins: [],

@@ -1,87 +1,133 @@
-# DropRegards - Solana Blink Donation App
+# DropRegards
 
-This project demonstrates how to create a Solana Blink that allows users to donate SOL to a specified wallet address. It uses NextJS to combine both frontend and backend into a simple project.
+A platform for sending SOL with personalized messages and NFT certificates.
 
-## What are Blinks?
+## Overview
 
-Blinks are chain-agnostic, shareable mini-applications that can execute transactions directly within crypto wallets and applications. They are designed to be simple, reusable, and easily integrated.
+DropRegards allows users to:
 
-Blinks consist of two parts:
+- Send SOL to other users along with personalized messages
+- Create beautiful NFT certificates for special transactions
+- Build a collection of received certificates
+- Create and manage a user profile
 
-- **BlinkProvider**: Backend REST API (what we implement in this project)
-- **BlinkClient**: Frontend components that render the blink in wallets and applications
+## Tech Stack
 
-## Features
-
-- Predefined donation amounts (0.01, 0.05, 0.1 SOL)
-- Custom donation amount option
-- Works with any Blink-compatible wallet
-- Uses Solana versioned transactions for maximum compatibility
-- Runs on Solana devnet
-
-## Technical Implementation
-
-This blink demonstrates several important Solana concepts:
-
-- Creating versioned transactions with TransactionMessage
-- Using the Solana Web3.js library to interact with the blockchain
-- Handling blockchain responses in a NextJS API route
-- Proper error handling for blockchain transactions
+- **Frontend**: Next.js, React, TailwindCSS, Solana Wallet Adapter
+- **Backend**: Flask, MongoDB, JWT authentication
+- **Blockchain**: Solana
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js 18.x or later
-- A Solana wallet with devnet SOL
+- Node.js 16+
+- Python 3.8+
+- MongoDB (local instance or MongoDB Atlas)
+- Solana wallet (Phantom, Solflare, etc.)
 
-### Installation
+### Setup and Installation
 
-1. Clone the repository:
+#### Backend Setup
 
-   ```
-   git clone <repository-url>
-   cd solana-blink-donation
-   ```
+1. Set up the Python virtual environment:
 
-2. Install dependencies:
+```bash
+# On Windows
+.\setup_venv.bat
+# or with PowerShell
+.\setup_venv.ps1
 
-   ```
-   npm install
-   ```
+# On Unix
+python -m venv venv
+source venv/bin/activate
+pip install -r api/requirements.txt
+```
+
+2. Ensure MongoDB is running (install locally or use MongoDB Atlas)
+
+3. Update the `.env` file with your configuration:
+
+```
+# Flask Configuration
+FLASK_APP=api.index
+FLASK_ENV=development
+
+# Security
+JWT_SECRET_KEY=your_jwt_secret  # change this for security
+
+# Python Path Configuration
+PYTHONPATH=.
+
+# Database
+MONGODB_URI=mongodb://localhost:27017/dropregards  # update with your MongoDB URI
+
+# Solana
+SOLANA_RPC_URL=https://api.devnet.solana.com
+
+# CORS
+CORS_ORIGIN=*
+```
+
+4. Start the backend server:
+
+```bash
+# On Windows
+.\run_backend.bat
+# or with PowerShell
+.\run_backend.ps1
+
+# On Unix
+export FLASK_APP=api.index
+export FLASK_ENV=development
+python -m flask run --host=0.0.0.0 --port=5000 --debug
+```
+
+The backend API will be available at `http://localhost:5000/api`.
+
+#### Frontend Setup
+
+1. Install dependencies:
+
+```bash
+npm install
+# or
+yarn install
+```
+
+2. Create a `.env.local` file with:
+
+```
+NEXT_PUBLIC_API_URL=http://localhost:5000/api
+NEXT_PUBLIC_SOLANA_NETWORK=devnet
+NEXT_PUBLIC_SOLANA_RPC_URL=https://api.devnet.solana.com
+```
 
 3. Start the development server:
 
-   ```
-   npm run dev
-   ```
+```bash
+npm run dev
+# or
+yarn dev
+```
 
-4. Access the application at [http://localhost:3000](http://localhost:3000)
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## Usage
+## Development Workflow
 
-1. Open the application in your browser
-2. Access the blink at `http://localhost:3000/api/actions/donate-sol`
-3. If you have a Blink-compatible wallet, you can interact directly with the blink
-4. Select a donation amount or enter a custom amount
-5. Approve the transaction in your wallet
+1. Start both backend and frontend servers
+2. Connect your Solana wallet to the application
+3. Create a user profile if you're a new user
+4. Start sending and receiving regards!
 
-## Project Structure
+## Troubleshooting
 
-- `src/app/actions.json/route.ts` - The actions.json configuration for blink discovery
-- `src/app/api/actions/donate-sol/route.ts` - The main blink provider implementation
-- `public/donate-sol.jpg` - The blink icon image
+If you encounter errors related to MongoDB or bson modules:
 
-## Customization
+- Make sure MongoDB is running
+- Try using pymongo version 4.4.1 (`pip install pymongo==4.4.1`)
+- Ensure your PYTHONPATH includes the project root directory
 
-To customize the recipient address, modify the `donationWallet` constant in the `src/app/api/actions/donate-sol/route.ts` file.
+## API Documentation
 
-## Learn More
-
-- [Dialect Blinks Documentation](https://www.dialect.to/post/blinks-are-here)
-- [Solana Web3.js Documentation](https://docs.solana.com/developing/clients/javascript-api)
-- [NextJS Documentation](https://nextjs.org/docs)
-
-## License
-
-This project is MIT licensed.
+The REST API is documented in [README_BACKEND.md](README_BACKEND.md).

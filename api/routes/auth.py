@@ -46,30 +46,35 @@ def verify_signature():
     if not all([wallet_address, signature, nonce]):
         return jsonify({"error": "Wallet address, signature, and nonce are required"}), 400
     
-    # TODO: Implement actual signature verification
-    # is_valid = verify_wallet_signature(wallet_address, signature, nonce)
-    is_valid = True  # Placeholder for now
+    # Verify signature using Solana utilities
+    is_valid = verify_wallet_signature(wallet_address, signature, nonce)
     
     if not is_valid:
         return jsonify({"error": "Invalid signature"}), 401
     
-    # Find or create user
-    # TODO: Implement user lookup or creation
-    # user = find_user_by_wallet(wallet_address)
+    # Find user
+    user = find_user_by_wallet(wallet_address)
+    user_exists = user is not None
     
     # Generate JWT token
-    # In production, use a secure secret key
     secret_key = os.environ.get('JWT_SECRET_KEY', 'dev_secret_key')
     token = jwt.encode({
         'sub': wallet_address,
         'iat': datetime.utcnow(),
-        'exp': datetime.utcnow() + timedelta(days=1)
+        'exp': datetime.utcnow() + timedelta(days=1),
+        'hasProfile': user_exists
     }, secret_key, algorithm='HS256')
     
-    return jsonify({
+    response_data = {
         "token": token,
-        "walletAddress": wallet_address
-    })
+        "walletAddress": wallet_address,
+        "hasProfile": user_exists
+    }
+    
+    if user_exists:
+        response_data["username"] = user.get('username')
+    
+    return jsonify(response_data)
 
 # Logout route
 @auth_bp.route('/logout', methods=['POST'])

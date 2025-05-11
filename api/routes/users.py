@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from api.middleware.auth import token_required
-from api.models.user import create_user, update_user, find_user_by_username, find_user_by_wallet
+from api.models.user import create_user, update_user, find_user_by_username, find_user_by_wallet, username_exists
+from api.utils.profile import get_profile_image
 
 # Initialize blueprint
 users_bp = Blueprint('users', __name__)
@@ -16,10 +17,8 @@ def check_username():
     if not username:
         return jsonify({"error": "Username parameter is required"}), 400
     
-    # TODO: Implement actual username check against database
-    # user = find_user_by_username(username)
-    # available = user is None
-    available = True  # Placeholder for now
+    # Check if username exists in database
+    available = not username_exists(username)
     
     return jsonify({
         "username": username,
@@ -40,7 +39,7 @@ def create_profile(current_user):
     }
     """
     data = request.json
-    wallet_address = current_user['wallet_address']
+    wallet_address = current_user.get('walletAddress')
     username = data.get('username')
     
     if not username:
@@ -51,10 +50,14 @@ def create_profile(current_user):
         return jsonify({"error": "Invalid username format"}), 400
     
     # Check if username is taken
-    # TODO: Implement actual username check against database
-    # existing_user = find_user_by_username(username)
-    # if existing_user:
-    #     return jsonify({"error": "Username is already taken"}), 409
+    existing_user = find_user_by_username(username)
+    if existing_user:
+        return jsonify({"error": "Username is already taken"}), 409
+    
+    # Check if user already has a profile
+    existing_profile = find_user_by_wallet(wallet_address)
+    if existing_profile:
+        return jsonify({"error": "User already has a profile"}), 409
     
     # Create user profile
     user_data = {
@@ -65,12 +68,11 @@ def create_profile(current_user):
         'profileImage': data.get('profileImage', '')
     }
     
-    # TODO: Implement actual user creation in database
-    # user = create_user(user_data)
+    user = create_user(user_data)
     
     return jsonify({
         "message": "User profile created successfully",
-        "user": user_data
+        "user": user
     }), 201
 
 # Get user profile
@@ -80,21 +82,15 @@ def get_profile(current_user):
     """
     Get the current user's profile
     """
-    wallet_address = current_user['wallet_address']
+    wallet_address = current_user.get('walletAddress')
     
-    # TODO: Implement actual user lookup from database
-    # user = find_user_by_wallet(wallet_address)
-    # if not user:
-    #     return jsonify({"error": "User not found"}), 404
+    user = find_user_by_wallet(wallet_address)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
     
-    # Placeholder for now
-    user = {
-        'walletAddress': wallet_address,
-        'username': 'username',
-        'displayName': 'Display Name',
-        'bio': 'User bio',
-        'profileImage': ''
-    }
+    # Ensure user has a profile image (placeholder if needed)
+    if not user.get('profileImage'):
+        user['profileImage'] = get_profile_image(user)
     
     return jsonify(user)
 
@@ -111,12 +107,11 @@ def update_profile(current_user):
     }
     """
     data = request.json
-    wallet_address = current_user['wallet_address']
+    wallet_address = current_user.get('walletAddress')
     
-    # TODO: Implement actual user lookup from database
-    # user = find_user_by_wallet(wallet_address)
-    # if not user:
-    #     return jsonify({"error": "User not found"}), 404
+    user = find_user_by_wallet(wallet_address)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
     
     # Update user data
     update_data = {}
@@ -127,17 +122,7 @@ def update_profile(current_user):
     if 'profileImage' in data:
         update_data['profileImage'] = data['profileImage']
     
-    # TODO: Implement actual user update in database
-    # updated_user = update_user(wallet_address, update_data)
-    
-    # Placeholder for now
-    updated_user = {
-        'walletAddress': wallet_address,
-        'username': 'username',
-        'displayName': data.get('displayName', 'Display Name'),
-        'bio': data.get('bio', 'User bio'),
-        'profileImage': data.get('profileImage', '')
-    }
+    updated_user = update_user(wallet_address, update_data)
     
     return jsonify(updated_user)
 
@@ -147,20 +132,19 @@ def get_user_by_username(username):
     """
     Get a user's public profile by username
     """
-    # TODO: Implement actual user lookup from database
-    # user = find_user_by_username(username)
-    # if not user:
-    #     return jsonify({"error": "User not found"}), 404
+    user = find_user_by_username(username)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
     
-    # Placeholder for now
-    user = {
-        'username': username,
-        'displayName': 'Display Name',
-        'bio': 'User bio',
-        'profileImage': ''
+    # Remove private information
+    public_user = {
+        'username': user['username'],
+        'displayName': user['displayName'],
+        'bio': user['bio'],
+        'profileImage': user.get('profileImage') or get_profile_image(user)
     }
     
-    return jsonify(user)
+    return jsonify(public_user)
 
 # Helper function to validate username format
 def is_valid_username(username):
